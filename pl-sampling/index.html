@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<!--
+  Product Sampling for Software Product Lines
+  
+  @author Thomas Thüm
+  @author Lennart Pape
+  @date 2026-03-14
+  @version 1.0.0
+-->  
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Product Sampling</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="../css/styles.css"/>
+</head>
+<body>
+  <header class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+      <h1>Institute of Software Engineering and Automotive Informatics</h1>  
+      <h2>Product Sampling for Software Product Lines</h2>
+    </div>  
+    <img src="../img/logo_ISF.svg" alt="ISF Logo" class="logo mb-2" style="height: 80px;">
+  </header>
+  <main>
+    <p>
+        The analysis of software product lines is challenging due to the potentially large number 
+        of products, which grow exponentially in terms of the number of features. Product sampling 
+        is a technique used to avoid exhaustive testing, which is often infeasible. We have proposed a 
+        classification for product sampling techniques and classified the existing literature accordingly. 
+        We distinguish the important characteristics of such approaches based on the information used for 
+        sampling, the kind of algorithm, and the achieved coverage criteria. Furthermore, we give an overview 
+        on existing tools and evaluations of product sampling techniques. We share our insights on the 
+        state-of-the-art of product sampling and discuss potential future work.
+    </p>
+    <p>
+        This website is accepted as an official ACM artifact to our publication at SPLC'18 [1]. As 
+        the large number of algorithms and our detailed classification give rise to a large space, 
+        that is hard to explore only by means of a table in the proceedings. Here, we offer an interactive 
+        table with filter and sorting capabilities. Furthermore, product sampling is a very active research 
+        area and new algorithms are published several times a year. We aim to keep the table up-to-date, but 
+        kindly ask you to
+        <a href="mailto:t.thuem@tu-braunschweig.de?subjectProduct%20Sampling">report any missing literature and wrong classifications to us</a>. 
+        Instead of sending an e-mail it is also possible to propose changes by means of a
+        <a href="https://github.com/tthuem/BibTags/blob/master/literature.bib"> pull request</a>. 
+        In the request, you can add the paper to the file of Bibtex entries, which is used to generate this website. Please note that there is a 
+        dedicated entry called 
+        <tt>sampling-tags</tt> 
+        containing the classification (e.g., 
+        <tt>feature model</tt> 
+        as input data or 
+        <tt>name=NewAlgorithm</tt> 
+        to specify the entry in column entitled Algorithm). We will review the changes manually and update the website accordingly.
+    </p>
+    <p>
+        [1] Mahsa Varshosaz, Mustafa Al-Hajjaji, Thomas Thüm, Tobias Runge, Mohammadreza Mousavi, and Ina Schaefer.
+        <a href="https://www.isf.cs.tu-bs.de/cms/team/thuem/papers/2018-SPLC-Varshosaz.pdf">
+            <strong>A Classification of Product Sampling for Software Product Lines</strong>
+        </a>
+        . In
+        <cite>
+            Proceedings of the International Software Product Line Conference (SPLC)
+        </cite>
+        . September 2018. To appear.
+    </p>
+  </main>
+
+  <div class="container">
+    <!-- Active Filters Display -->
+    <div class="active-filters">
+        <strong>Active Filters:</strong>
+        <div id="active-filters-container" class="d-inline">
+            <span class="text-muted">No filters applied</span>
+        </div>
+        <button id="clear-all-filters" class="clear-all-btn" style="display: none;">Clear All</button>
+    </div>
+    
+    <!-- Display Table-->
+    <table id="csvTable" class="table table-striped table-bordered" style="width:100%">
+        <thead></thead>
+    </table>
+  </div>
+
+  <!-- JS Libraries and Script-->
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <script src="../js/script.js"></script>
+
+  <main>
+    <p>
+        The table above is the result of an expert survey. More details on the methodology can be found in
+        the SPLC'18 paper. Nevertheless, there are a couple of details (not given in the paper) that
+        we aim to share in the following. 
+    </p>
+    <ul>
+        <li>
+            <div class="marker">
+                <b>Keyword Search and Filters:</b>
+                The website enables users to search by any keyword, such as author names or publication titles. 
+                Furthermore, it is possible to filter particular columns by one or more entries. Several filters 
+                for one column are considered as the union, whereas filters in different columns are used as 
+                subsequent filters of the search space.
+            </div>
+        </li>
+        <li>
+            <div class="marker">
+                <b>Links to Google Scholar:</b>
+                When clicking on the title of a paper we direct to a Google Scholar search for that paper. 
+                This search typically leads to the publisher page or other freely available source of the paper.
+            </div>
+        </li>
+        <li>
+            <div class="marker">
+                <b>Names of Sampling Algorithms:</b>
+                For brevity, we had to omit the names of sampling algorithms in the table in the paper. 
+                On the website, those names are specified for each row that corresponds to a newly proposed 
+                algorithm. This is particularly useful if several sampling algorithms have been proposed in the 
+                same paper, but are classified differently.
+            </div>
+        </li>
+        <li>
+            <div class="marker">
+                <b>Inclusion of Subsumed Publications:</b>
+                In our paper, we omit papers being subsumed by follow-up papers for brevity. On the website, 
+                all papers are shown and classified. This is particularly helpful if someone is aware of any 
+                particular paper, but it was subsumed by a follow-up work.
+            </div>
+        </li>
+        <li>
+            <div class="marker">
+                <b>Further Tags:</b>
+                We created a separate column to include further tags for each publication. Those give more 
+                details on tools and evaluations. In particular, we included tool names of proposed tools 
+                but also of reused tools. For evaluations, we also list other algorithms that have been 
+                evaluated. Using the keyword search, it is now possible to see which publications evaluate a 
+                particular sampling algorithm (e.g., ICPL).
+            </div>
+        </li>
+        <li>
+            <div class="marker">
+                <b>Extension to Future Publications:</b>
+                The table in our paper is fixed now, but the website is planned to be updated in the future. 
+                We envision that the research community supports us in this task by referring us to new 
+                publications. The original catalog being referenced in the SPLC'18 paper can be retrieved by 
+                the keyword SPLC18 (including subsumed papers).
+            </div>
+        </li>
+    </ul>
+    <p>
+        We hope that the artifact is of value to researchers and practitioners. Researchers can use it 
+        to explore related work. Practitioners may find it useful to find open-source tools for their 
+        particular setting, such as the input being available. 
+    </p>
+  </main>
+</body>
+</html>
