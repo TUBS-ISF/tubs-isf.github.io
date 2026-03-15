@@ -394,8 +394,8 @@ Papa.parse("data/literature.csv", {
             autoWidth: false,
             scrollX: true,
             responsive: false,
-            scrollCollapse: true,
-            columnDefs: [{ width: '125px', targets: '_all'}],
+            scrollCollapse: false,
+            // columnDefs: [{ width: '125px', targets: '_all'}],
             pageLength: -1,
             lengthMenu: [[-1, 10, 25, 50, 100], ["All", 10, 25, 50, 100]],
             initComplete: function () {
@@ -466,7 +466,7 @@ Papa.parse("data/literature.csv", {
         });
         
         // Sync header scroll with body scroll
-        setTimeout(function() {
+        /* setTimeout(function() {
             const scrollBody = $('.dataTables_scrollBody');
             const scrollHeadInner = $('.dataTables_scrollHeadInner');
             const scrollBodyTable = $('.dataTables_scrollBody table');
@@ -483,11 +483,12 @@ Papa.parse("data/literature.csv", {
                 
                 scrollBody.trigger('scroll');
             }
-        }, 200);
+        }, 200); */
     }
 });
 
 // Adjust columns on window resize
 $(window).on('resize', function () {
-    table.columns.adjust().draw(false); 
+    //table.columns.adjust().draw(false); 
+    if (table) table.columns.adjust();
 });
