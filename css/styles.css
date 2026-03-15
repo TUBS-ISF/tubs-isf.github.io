@@ -4,7 +4,7 @@
  * 
  * @author Lennart Pape
  * @date 2026-01-04
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 /* Body */
@@ -13,11 +13,6 @@ body {
   background: #f8f9fa; 
   overscroll-behavior: none;
 }
-
-/* .content {
-  padding: 0.5rem;
-} */
-
 
 .container-fluid {
   padding-left: 0;
@@ -34,10 +29,6 @@ body {
   width: 100%;
 }
 
-/* .dataTables_scroll {
-  overflow-x: visible !important;
-} */
-
 /* DataTable - Table Structure */
 #csvTable.dataTable {
   table-layout: auto;
@@ -48,9 +39,7 @@ body {
 #csvTable.dataTable td {
   min-width: 90px;
 }
-/* .dataTables_scrollBody table {
-  width: 100% !important;
-} */
+
 
 /* DataTable - Header */
 table.dataTable thead {
@@ -88,37 +77,6 @@ table.dataTable thead tr:nth-child(2) th .multi-select-dropdown {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
-/* .dataTables_scrollHead .table thead th {
-  overflow: hidden;
-  white-space: nowrap;
-  box-sizing: border-box;
-  vertical-align: middle;
-} */
-
-/* DataTable - Scrolling */
-/* .dataTables_scrollHead {
-  overflow: hidden !important;
-  width: 100% !important;
-}
-
-.dataTables_scrollHeadInner {
-  overflow: hidden !important;
-  width: 100% !important;
-  transition: margin-left 0s !important;
-  box-sizing: content-box !important;
-} 
-
-.dataTables_scrollBody {
-  overflow-x: auto !important; 
-  box-sizing: content-box !important;
-  position: relative;
-  z-index: 1 !important;
-}
-
-.dataTables_scrollHead table {
-  transition: margin-left 0s !important;
-} */
 
 .dataTables_scrollBody {
   overscroll-behavior-x: none !important;

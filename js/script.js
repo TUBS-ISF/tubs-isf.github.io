@@ -7,7 +7,7 @@
  * 
  * @author Lennart Pape
  * @date 2026-01-04
- * @version 1.0.0
+ * @version 1.0.1
  * @requires jQuery, DataTables, PapaParse, Bootstrap
  */
 
@@ -464,26 +464,6 @@ Papa.parse("data/literature.csv", {
                 scrollTop: 0
             }, 10);
         });
-        
-        // Sync header scroll with body scroll
-        /* setTimeout(function() {
-            const scrollBody = $('.dataTables_scrollBody');
-            const scrollHeadInner = $('.dataTables_scrollHeadInner');
-            const scrollBodyTable = $('.dataTables_scrollBody table');
-            const scrollHeadTable = $('.dataTables_scrollHead table');
-            
-            if (scrollBody.length && scrollHeadInner.length) {
-                const bodyWidth = scrollBodyTable.outerWidth();
-                scrollHeadTable.css('width', bodyWidth + 'px');
-                
-                scrollBody.off('scroll').on('scroll', function() {
-                    const scrollLeft = $(this).scrollLeft();
-                    scrollHeadTable.css('margin-left', -scrollLeft + 'px');
-                });
-                
-                scrollBody.trigger('scroll');
-            }
-        }, 200); */
     }
 });
 
