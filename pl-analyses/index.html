@@ -23,7 +23,7 @@
     <img src="../img/logo_ISF.svg" alt="ISF Logo" class="logo mb-2" style="height: 80px;">
   </header>
   <main>
-    <p>
+    <p class="justify">
         Software-product-line engineering has gained considerable momentum in recent years, 
         both in industry and in academia. A software product line is a set of software products 
         that share a common set of features. Software product lines challenge traditional analysis 
@@ -34,7 +34,7 @@
         software product lines into account, for example, by checking feature-related code in isolation or by 
         exploiting variability information during analysis.
     </p>
-    <p>
+    <p class="justify">
         The emerging field of product-line analysis techniques is both broad and diverse such that it is 
         difficult for researchers and practitioners to understand their similarities and differences (e.g.,
         with regard to variability awareness or scalability), which hinders systematic research and application. 
@@ -44,7 +44,7 @@
         and efficient. A long-term goal is to empower developers to choose the right analysis technique for 
         their needs out of a pool of techniques with different strengths and weaknesses.
     </p>
-    <p>
+    <p class="justify">
         We refer interested readers to our paper listed below and want to share the current state of our 
         classification. Please do not hesitate to 
         <a href="mailto:t.thuem@tu-braunschweig.de?subject=Analysis%20Strategies">contact us</a>, 
@@ -56,31 +56,78 @@
         Publications
     </h3>
     <ul class="bib2xhtml">
+        <!--Authors: Meinecke Jens and Thum Thomas and Schroter Reimar and Benduhn Fabian and Saake Gunter-->
         <li>
-            <!-- TODO: GO ON HERE -->
+            <a name="MeineckeTS+14"></a>
+            Jens Meinicke, Thomas Thüm, Reimar Schröter, Fabian Benduhn, and Gunter Saake.
+            <a href="http://wwwiti.cs.uni-magdeburg.de/iti_db/publikationen/ps/auto/MeinickeTS+14.pdf">
+                An Overview on Analysis Tools for Software Product Lines
+            </a>
+            . In 
+            <cite>
+                Workshop on Software Product Line Analysis Tools (SPLat)
+            </cite>
+            , pages 94-101, New York, NY, USA, September 2014. ACM.
+        </li>
+        <!--Authors: Thum Thomas and Apel Sven and Kastner Christian and Schaefer Ina and Saake Gunter-->
+        <li>
+            <a name="ThuemAKSS14"></a>
+            Thomas Thüm, Sven Apel, Christian Kästner, Ina Schaefer, and Gunter Saake.
+            <a href="http://wwwiti.cs.uni-magdeburg.de/iti_db/publikationen/ps/auto/ThuemAKSS14.pdf">
+                A Classification and Survey of Analysis Strategies for Software Product Lines
+            </a>
+            . 
+            <cite>
+                ACM Computing Surveys
+            </cite>
+            , 47(1):6:1-6:45, June 2014.
+        </li>
+        <!--Authors: von Rhein Alexander and Apel Sven and Kastner Christian and Thum Thomas and Ina Schaefer-->
+        <li>
+            <a name="vonRheinAK+:VaMoS13"></a>
+            Alexander von Rhein, Sven Apel, Christian Kästner, Thomas Thüm, and Ina Schaefer.
+            <a href="http://wwwiti.cs.uni-magdeburg.de/iti_db/publikationen/ps/auto/RAK+:VaMoS13.pdf">
+                The PLA Model: On the Combination of Product-Line Analyses
+            </a>
+            . In
+            <cite>
+                International Workshop on Variability Modelling of Software-intensive Systems (VaMoS)
+            </cite>
+            , pages 14:1-14:8, New York, NY, USA, January 2013. ACM.
+        </li>
+        <!--Authors: Thum Thomas and Apel Sven and Kastner Christian and Kuhlemann Martin and Schaefer Ina and Saake Gunter-->
+        <li>
+            <a name="TAK+12"></a>
+            Thomas Thüm, Sven Apel, Christian Kästner, Martin Kuhlemann, Ina Schaefer, and Gunter Saake.
+            <a href="http://www.cs.uni-magdeburg.de/inf_media/downloads/forschung/technical_reports_und_preprints/2012/04_2012.pdf">
+                Analysis Strategies for Software Product Lines
+            </a>
+            . Technical Report FIN-004-2012, School of Computer Science, University of Magdeburg, Germany, April 2012.
+            (<a href="http://wwwiti.cs.uni-magdeburg.de/iti_db/publikationen/ps/auto/TAK+12.pdf">PDF</a>)
         </li>
     </ul>
     <h3>
         <a name="classification"></a>
         Classification
     </h3>
-  </main>
+  
 
-  <div class="container">
-    <!-- Active Filters Display -->
-    <div class="active-filters">
-        <strong>Active Filters:</strong>
-        <div id="active-filters-container" class="d-inline">
-            <span class="text-muted">No filters applied</span>
+    <div class="container-fluid">
+        <!-- Active Filters Display -->
+        <div class="active-filters">
+            <strong>Active Filters:</strong>
+            <div id="active-filters-container" class="d-inline">
+                <span class="text-muted">No filters applied</span>
+            </div>
+            <button id="clear-all-filters" class="clear-all-btn" style="display: none;">Clear All</button>
         </div>
-        <button id="clear-all-filters" class="clear-all-btn" style="display: none;">Clear All</button>
+        
+        <!-- Display Table-->
+        <table id="csvTable" class="table table-striped table-bordered" style="width:100%">
+            <thead></thead>
+        </table>
     </div>
-    
-    <!-- Display Table-->
-    <table id="csvTable" class="table table-striped table-bordered" style="width:100%">
-        <thead></thead>
-    </table>
-  </div>
+  </main>
 
   <!-- JS Libraries and Script-->
   <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
@@ -88,5 +135,5 @@
   <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
   <script src="../js/script.js"></script>
-
+</body>
 </html>
