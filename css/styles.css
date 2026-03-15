@@ -11,6 +11,17 @@
 body { 
   padding: 1.5rem; 
   background: #f8f9fa; 
+  overscroll-behavior: none;
+}
+
+/* .content {
+  padding: 0.5rem;
+} */
+
+
+.container-fluid {
+  padding-left: 0;
+  padding-right: 0;
 }
 
 /* DataTable - Main Container */
@@ -19,22 +30,27 @@ body {
 }
 
 #csvTable_wrapper {
-  overflow: visible !important;
+  overflow-x: auto;
   width: 100%;
 }
 
-.dataTables_scroll {
+/* .dataTables_scroll {
   overflow-x: visible !important;
-}
+} */
 
 /* DataTable - Table Structure */
 #csvTable.dataTable {
-  table-layout: fixed;
-}
-
-.dataTables_scrollBody table {
+  table-layout: auto;
   width: 100% !important;
 }
+
+#csvTable.dataTable th,
+#csvTable.dataTable td {
+  min-width: 90px;
+}
+/* .dataTables_scrollBody table {
+  width: 100% !important;
+} */
 
 /* DataTable - Header */
 table.dataTable thead {
@@ -73,15 +89,15 @@ table.dataTable thead tr:nth-child(2) th .multi-select-dropdown {
   white-space: nowrap;
 }
 
-.dataTables_scrollHead .table thead th {
+/* .dataTables_scrollHead .table thead th {
   overflow: hidden;
   white-space: nowrap;
   box-sizing: border-box;
   vertical-align: middle;
-}
+} */
 
 /* DataTable - Scrolling */
-.dataTables_scrollHead {
+/* .dataTables_scrollHead {
   overflow: hidden !important;
   width: 100% !important;
 }
@@ -91,7 +107,7 @@ table.dataTable thead tr:nth-child(2) th .multi-select-dropdown {
   width: 100% !important;
   transition: margin-left 0s !important;
   box-sizing: content-box !important;
-}
+} 
 
 .dataTables_scrollBody {
   overflow-x: auto !important; 
@@ -102,6 +118,10 @@ table.dataTable thead tr:nth-child(2) th .multi-select-dropdown {
 
 .dataTables_scrollHead table {
   transition: margin-left 0s !important;
+} */
+
+.dataTables_scrollBody {
+  overscroll-behavior-x: none !important;
 }
 
 /* DataTable - Controls */
@@ -230,7 +250,7 @@ body > .multi-select-options {
   z-index: 10000 !important;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
   display: none;
-  min-width: 150px !important;
+  min-width: 90px !important;
 }
 
 body > .multi-select-options.show {
