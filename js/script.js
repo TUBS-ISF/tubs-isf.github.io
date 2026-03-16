@@ -7,7 +7,7 @@
  * 
  * @author Lennart Pape
  * @date 2026-01-04
- * @version 1.0.1
+ * @version 1.1.1
  * @requires jQuery, DataTables, PapaParse, Bootstrap
  */
 
@@ -373,6 +373,21 @@ Papa.parse("data/literature.csv", {
                         _: data => data.toString(), 
                     }
                 };
+            }
+            if (key === "Title") {
+                return {
+                    title: key,
+                    data: key,
+                    render: function (data, type, row) {
+                        if (type === 'display') {
+                            const query = encodeURIComponent(row.Authors + ' ' + data);
+                            const escaped = $('<div>').text(data).html();
+                            return `<a href="https://scholar.google.com/scholar?q=${query}"
+                                target="_blank">${escaped}</a>`;
+                        }
+                         return data;   
+                    } 
+                }
             }
             return { 
                 title: key, 
