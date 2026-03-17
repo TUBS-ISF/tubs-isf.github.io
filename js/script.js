@@ -7,7 +7,7 @@
  * 
  * @author Lennart Pape
  * @date 2026-01-04
- * @version 1.1.1
+ * @version 1.1.0
  * @requires jQuery, DataTables, PapaParse, Bootstrap
  */
 
@@ -374,6 +374,7 @@ Papa.parse("data/literature.csv", {
                     }
                 };
             }
+            // Add Google Scholar links for Title column
             if (key === "Title") {
                 return {
                     title: key,
@@ -410,7 +411,6 @@ Papa.parse("data/literature.csv", {
             scrollX: true,
             responsive: false,
             scrollCollapse: false,
-            // columnDefs: [{ width: '125px', targets: '_all'}],
             pageLength: -1,
             lengthMenu: [[-1, 10, 25, 50, 100], ["All", 10, 25, 50, 100]],
             initComplete: function () {
@@ -484,6 +484,5 @@ Papa.parse("data/literature.csv", {
 
 // Adjust columns on window resize
 $(window).on('resize', function () {
-    //table.columns.adjust().draw(false); 
     if (table) table.columns.adjust();
 });
