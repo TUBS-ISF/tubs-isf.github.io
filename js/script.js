@@ -11,6 +11,11 @@
  * @requires jQuery, DataTables, PapaParse, Bootstrap
  */
 
+// Prevent browser scroll restoration
+if (history.scrollRestoration) {
+    history.scrollRestoration = 'manual';
+}
+
 // Global state
 let activeFilters = {};
 let table;
@@ -474,11 +479,11 @@ Papa.parse("data/literature.csv", {
         });
         
         // Scroll to top on table redraw
-        table.on('draw', function() {
+        /* table.on('draw', function() {
             $('html, body').animate({
                 scrollTop: 0
             }, 10);
-        });
+        }); */
     }
 });
 
