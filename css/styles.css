@@ -301,3 +301,23 @@ body > .multi-select-options.show {
 .justify {
   text-align: justify;
 }
+
+/* Mobile */
+@media (max-width: 576px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+
+  header img {
+    margin-top: 0.5rem;
+  }
+
+  h1 {
+    font-size: 1.2rem;
+  }
+
+  h2 {
+    font-size: 1rem;
+  }
+}
