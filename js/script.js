@@ -7,7 +7,7 @@
  * 
  * @author Lennart Pape
  * @date 2026-01-04
- * @version 1.1.0
+ * @version 1.1.1
  * @requires jQuery, DataTables, PapaParse, Bootstrap
  */
 
