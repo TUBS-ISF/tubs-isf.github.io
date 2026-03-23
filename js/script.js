@@ -473,7 +473,7 @@ Papa.parse("data/literature.csv", {
                 search: "Search:",
                 lengthMenu: "Show _MENU_ entries",
                 info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                paginate: { previous: "Previous", next: "Next" },
+                paginate: {previous: "Previous", next: "Next"},
                 zeroRecords: "No matching entries found"
             }
         });
