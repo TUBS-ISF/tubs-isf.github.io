@@ -302,14 +302,10 @@ body > .multi-select-options.show {
   text-align: justify;
 }
 
-/* Mobile */
+/* Mobile specific styles */
 @media (max-width: 576px) {
-  header {
-    flex-direction: column;
-    align-items: flex-start !important;
-  }
-
   header img {
+    height: 50px !important;
     margin-top: 0.5rem;
   }
 
