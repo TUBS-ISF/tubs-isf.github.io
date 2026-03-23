@@ -304,6 +304,10 @@ body > .multi-select-options.show {
 
 /* Mobile specific styles */
 @media (max-width: 576px) {
+  header {
+    align-items: flex-start;
+  }
+
   header img {
     height: 50px !important;
     margin-top: 0.5rem;
