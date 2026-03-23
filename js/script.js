@@ -386,12 +386,18 @@ Papa.parse("data/literature.csv", {
                     data: key,
                     render: function (data, type, row) {
                         if (type === 'display') {
-                            const query = encodeURIComponent(row.Authors + ' ' + data);
-                            const escaped = $('<div>').text(data).html();
-                            return `<a href="https://scholar.google.com/scholar?q=${query}"
-                                target="_blank">${escaped}</a>`;
+                            const htmlParser = document.createElement('textarea');
+                            htmlParser.innerHTML = data;
+                            const decodedTitle = htmlParser.value;
+                            const query = encodeURIComponent(row.Authors + ' ' + decodedTitle);
+                            const link = document.createElement('a');
+
+                            link.href = `https://scholar.google.com/scholar?q=${query}`;
+                            link.target = "_blank";
+                            link.textContent = decodedTitle;
+                            return link.outerHTML;
                         }
-                         return data;   
+                        return data;   
                     } 
                 }
             }
