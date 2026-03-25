@@ -77,40 +77,66 @@ function createMultiSelect(container, options, column) {
         optionDiv.attr('title', option);
         optionsContainer.append(optionDiv);
     });
+
+    const closeBtn = $('<div class="multi-select-close-btn">Apply</div>');
+    optionsContainer.append(closeBtn);
+
+    // Event-Handler Button
+    closeBtn.on('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        optionsContainer.removeClass('show').hide();
+        $('body').removeClass('modal-open');
+        currentlyOpenDropdown = null;
+    });
     
     multiSelect.append(dropdown);
     
     // Toggle dropdown visibility
     const toggleDropdown = function() {
         $('body > .multi-select-options').not(optionsContainer).removeClass('show').hide();
+        $('body').removeClass('modal-open');
+
         const isVisible = optionsContainer.hasClass('show');
+        const isMobile = window.innerWidth <= 768;
         
         if (!isVisible) {
             optionsContainer.css({
                 'display': 'block',
                 'visibility': 'hidden',
-                'width': 'auto'
+                'width': isMobile ? '90vw' : 'auto'
             });
 
-            const rect = dropdown[0].getBoundingClientRect();
-            const menuWidth = optionsContainer.outerWidth();
-            const windowWidth = window.innerWidth;
+            if (isMobile) {
+                optionsContainer.css({
+                    'visibility' : 'visible',
+                    'top': '',
+                    'left': ''
+                }).addClass('show');
 
-            let leftPosition = rect.left;
+                $('body').addClass('modal-open');
+            } else {
+                const rect = dropdown[0].getBoundingClientRect();
+                const menuWidth = optionsContainer.outerWidth();
+                const windowWidth = window.innerWidth;
 
-            if (rect.left + menuWidth > windowWidth) {
-                leftPosition = rect.right - menuWidth;
-                if (leftPosition < 0) leftPosition = 10;
-            } optionsContainer.css({
-                'visibility': 'visible',
-                'top': (rect.bottom + 2) + 'px',
-                'left': leftPosition + 'px'
+                let leftPosition = rect.left;
 
-            }).addClass('show');
+                if (rect.left + menuWidth > windowWidth) {
+                    leftPosition = rect.right - menuWidth;
+                    if (leftPosition < 0) leftPosition = 10;
+                } 
+                optionsContainer.css({
+                    'visibility': 'visible',
+                    'top': (rect.bottom + 2) + 'px',
+                    'left': leftPosition + 'px'
+                }).addClass('show');
+            }    
             
             currentlyOpenDropdown = optionsContainer;
         } else {
             optionsContainer.removeClass('show').hide();
+            $('body').removeClass('modal-open');
             currentlyOpenDropdown = null;
         }
     };
@@ -500,14 +526,26 @@ $(window).on('resize', function () {
     
 });
 
-// Close filter dropdown on mousewheel
-$(document).on('mousedown', function(e) {
+// Close filter dropdown on mousewheel and touchstart
+$(document).on('mousedown touchstart', function(e) {
     if (currentlyOpenDropdown) {
-        const isClickInsideMenu = $(e.target).closest('.multi-select-options').length > 0;
+        const container = currentlyOpenDropdown[0];
+        const rect = container.getBoundingClientRect();
+        
+        const clientX = e.clientX || (e.originalEvent && e.originalEvent.touches ? e.originalEvent.touches[0].clientX : 0);
+        const clientY = e.clientY || (e.originalEvent && e.originalEvent.touches ? e.originalEvent.touches[0].clientY : 0);
+
+        const isInsideWhiteBox = 
+            clientX >= rect.left && 
+            clientX <= rect.right && 
+            clientY >= rect.top && 
+            clientY <= rect.bottom;
+
         const isClickOnButton = $(e.target).closest('.multi-select-dropdown').length > 0;
         
-        if (!isClickInsideMenu && !isClickOnButton) {
+        if (!isInsideWhiteBox && !isClickOnButton) {
             currentlyOpenDropdown.removeClass('show').hide();
+            $('body').removeClass('modal-open');
             currentlyOpenDropdown = null;
         }
     }
@@ -516,8 +554,10 @@ $(document).on('mousedown', function(e) {
 // Close filter dropdown on scroll (vertical / horizontal)
 $(window).on('scroll wheel touchmove', function(e) {
     if (!currentlyOpenDropdown) return;
-
     if (isFilteringInProgress) return;
+
+    // Mobile - specific
+    if (window.innerWidth <= 768) return;
 
     const isScrollInsideDropdown = $(e.target).closest('.multi-select-options').length > 0;
 

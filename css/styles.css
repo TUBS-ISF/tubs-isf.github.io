@@ -189,6 +189,18 @@ header h1 {
   opacity: 1;
 }
 
+.multi-select-close-btn {
+    display: none;
+    background: #007bff;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin-top: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 0 0 4px 4px;
+}
+
 
 /* DATATABLE */
 
@@ -695,10 +707,27 @@ body > .multi-select-options.show {
       background-position: right 0.6rem center !important;
   }
 
+  body.modal-open {
+    overflow: hidden;
+  }
+
   body > .multi-select-options {
-    font-size: 0.9rem !important;
-    min-width: 110px !important;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    
+    width: 90vw !important;
+    max-width: 400px !important;
+    max-height: 70vh !important;
+
+    border-radius: 12px !important;
+    box-shadow: 0 0 0 100vmax rgba(0,0,0,0.5), 0 10px 30px rgba(0,0,0,0.25) !important;
+    overflow-y: auto;
+    position: fixed !important;
+    z-index: 10001 !important; 
+    overscroll-behavior: contain; 
+    background: white;
   }
 
   .multi-select-option {
@@ -744,6 +773,24 @@ body > .multi-select-options.show {
     padding: 0.75rem 1rem !important;
     font-size: 0.9rem !important;
     text-align: center;
+  }
+
+  .multi-select-close-btn {
+    display: block;
+    background-color: var(--isf-blue);
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-top: 1px solid #ddd;
+    z-index: 10;
+    border-radius: 0 0 10px 10px; 
+      margin-top: 0; 
+      border-top: 1px solid #eee;
+  }
+
+  .multi-select-options {
+    padding-bottom: 0; 
   }
 
   /* Active Filters & Badges */
