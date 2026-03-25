@@ -143,9 +143,13 @@ function createMultiSelect(container, options, column) {
             dropdown.find('.dropdown-text').text('All').removeClass('selected-values');
 
             isFilteringInProgress = true;
+
             applyFilters();
             updateActiveFiltersDisplay();
-            isFilteringInProgress = false;
+
+            setTimeout(() => {
+                isFilteringInProgress = false;
+            }, 100);
             
             optionsContainer.removeClass('show').hide();
             currentlyOpenDropdown = null;
@@ -177,9 +181,14 @@ function createMultiSelect(container, options, column) {
             updateDropdownText(dropdown, activeFilters[columnTitle]);
             
             isFilteringInProgress = true;
+
             applyFilters();
             updateActiveFiltersDisplay();
-            isFilteringInProgress = false;
+            
+            setTimeout(() => {
+                isFilteringInProgress = false;
+            }, 100);
+            
             
             // Reposition after table redraw
             setTimeout(function() {
@@ -505,14 +514,15 @@ $(document).on('mousedown', function(e) {
 });
 
 // Close filter dropdown on scroll (vertical / horizontal)
-$(window).on('scroll', function(e) {
-    if (currentlyOpenDropdown && !isFilteringInProgress) {
-        const activeEl = document.activeElement;
-        const isFocusInDropdown = $(activeEl).closest('.multi-select-options').length > 0;
-        
-        if (!isFocusInDropdown) {
-            currentlyOpenDropdown.removeClass('show').hide();
-            currentlyOpenDropdown = null;
-        }
+$(window).on('scroll wheel touchmove', function(e) {
+    if (!currentlyOpenDropdown) return;
+
+    if (isFilteringInProgress) return;
+
+    const isScrollInsideDropdown = $(e.target).closest('.multi-select-options').length > 0;
+
+    if (!isScrollInsideDropdown) {
+        currentlyOpenDropdown.removeClass('show').hide();
+        currentlyOpenDropdown = null;
     }
 });
