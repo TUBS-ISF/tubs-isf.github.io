@@ -7,8 +7,8 @@
   
   @author Lennart Pape
   @author Rahel Sundermann
-  @date 2026-03-14
-  @version 1.0.1
+  @date 2026-03-24
+  @version 2.0.0
 -->
 <html lang="en">
 <head>
@@ -16,47 +16,58 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tertiary Study PLA</title>
   
-  <!-- DataTables & Bootstrap CSS Styles-->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"/>
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css"/>
-  <link rel="stylesheet" href="../css/styles.css"/>
+  <!-- CSS Styles -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+  
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+  
+  <link rel="stylesheet" href="../css/styles.css">
 
 </head>
 <body>
-  <header class="d-flex align-items-center justify-content-between mb-3" style="flex-wrap: wrap;">
+  <header class="d-flex align-items-center justify-content-between" style="flex-wrap: wrap;">
     <div style="flex: 1; min-width: 0;">
         <h1>Institute of Software Engineering and Automotive Informatics</h1>  
     </div>  
     <a href="/">
-        <img src="../img/logo_ISF.svg" alt="ISF Logo" class="logo mb-2" style="height: 70px;">
+        <img src="../img/logo_ISF.svg" alt="ISF Logo" class="logo" style="height: 70px;">
     </a>
-    <div style="width: 100%;">
-        <h2>A Collection of Literature Surveys on Software Product Line Research</h2>
-    </div>
   </header>
+  <main>
+    <h2>A Collection of Literature Surveys on Software Product Line Research</h2>
 
-  <div class="container-fluid">
+    <div class="container-fluid">
     
-    <!-- Active Filters Display -->
-    <div class="active-filters">
-      <strong>Active Filters:</strong>
-      <div id="active-filters-container" class="d-inline">
-        <span class="text-muted">No filters applied</span>
-      </div>
-      <button id="clear-all-filters" class="clear-all-btn" style="display: none;">Clear All</button>
+        <!-- Active Filters Display -->
+        <div class="active-filters">
+            <strong>Active Filters:</strong>
+            <div id="active-filters-container" class="d-inline">
+                <span class="text-muted">No filters applied</span>
+            </div>
+            <button id="clear-all-filters" class="clear-all-btn" style="display: none;">Clear All</button>
+        </div>
+        
+        <!-- Display Table-->
+        <table id="csvTable" class="table table-striped table-bordered" style="width:100%">
+            <thead></thead>
+        </table>
     </div>
-    
-    <!-- Display Table-->
-    <table id="csvTable" class="table table-striped table-bordered" style="width:100%">
-      <thead></thead>
-    </table>
-  </div>
+  </main>
 
   <!-- JS Libraries and Script-->
   <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  
   <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  
   <script src="../js/script.js"></script>
 </body>
 </html>

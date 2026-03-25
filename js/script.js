@@ -6,8 +6,8 @@
  * only the rows that match the selected criteria.
  * 
  * @author Lennart Pape
- * @date 2026-01-04
- * @version 1.1.1
+ * @date 2026-03-24
+ * @version 2.0.0
  * @requires jQuery, DataTables, PapaParse, Bootstrap
  */
 
@@ -42,7 +42,7 @@ function updateDropdownText(dropdown, filters) {
             }
         } else {
             let truncatedFirst = firstValue.substring(0, maxLengthMoreFilters) + '...';
-            displayText = `${truncatedFirst} (+${remainingCount} more)`;
+            displayText = `${truncatedFirst} (+${remainingCount})`;
         }
 
         const fullText = filters.join(', ');
@@ -74,6 +74,7 @@ function createMultiSelect(container, options, column) {
     // Create individual options
     options.forEach(option => {
         const optionDiv = $('<div class="multi-select-option" data-value="' + option + '">' + option + '</div>');
+        optionDiv.attr('title', option);
         optionsContainer.append(optionDiv);
     });
     
@@ -85,13 +86,26 @@ function createMultiSelect(container, options, column) {
         const isVisible = optionsContainer.hasClass('show');
         
         if (!isVisible) {
-            const rect = dropdown[0].getBoundingClientRect();
-            const containerWidth = dropdown.outerWidth();
-            
             optionsContainer.css({
+                'display': 'block',
+                'visibility': 'hidden',
+                'width': 'auto'
+            });
+
+            const rect = dropdown[0].getBoundingClientRect();
+            const menuWidth = optionsContainer.outerWidth();
+            const windowWidth = window.innerWidth;
+
+            let leftPosition = rect.left;
+
+            if (rect.left + menuWidth > windowWidth) {
+                leftPosition = rect.right - menuWidth;
+                if (leftPosition < 0) leftPosition = 10;
+            } optionsContainer.css({
+                'visibility': 'visible',
                 'top': (rect.bottom + 2) + 'px',
-                'left': rect.left + 'px',
-                'width': containerWidth + 'px'
+                'left': leftPosition + 'px'
+
             }).addClass('show');
             
             currentlyOpenDropdown = optionsContainer;
@@ -133,8 +147,11 @@ function createMultiSelect(container, options, column) {
             updateActiveFiltersDisplay();
             isFilteringInProgress = false;
             
-            optionsContainer.removeClass('show');
+            optionsContainer.removeClass('show').hide();
             currentlyOpenDropdown = null;
+
+            e.preventDefault();
+            e.stopPropagation();
             e.stopImmediatePropagation();
         } else {
             // Individual option selected
@@ -191,32 +208,6 @@ function createMultiSelect(container, options, column) {
             currentlyOpenDropdown = null;
         }
     };
-    
-    // Close on outside click
-    $(document).on('click mousedown', function(e) {
-        if (isOutsideDropdown(e)) {
-            closeDropdown();
-        }
-    });
-    
-    // Close on scroll
-    $('.dataTables_scrollBody').on('scroll', function() {
-        if (!isFilteringInProgress) {
-            closeDropdown();
-        }
-    });
-    
-    $(window).on('scroll', function() {
-        if (!isFilteringInProgress) {
-            closeDropdown();
-        }
-    });
-    
-    $(document).on('wheel mousewheel', function(e) {
-        if (!isFilteringInProgress && isOutsideDropdown(e)) {
-            closeDropdown();
-        }
-    });
     
     // Reposition on window resize
     $(window).on('resize', function() {
@@ -483,17 +474,45 @@ Papa.parse("data/literature.csv", {
                 zeroRecords: "No matching entries found"
             }
         });
-        
-        // Scroll to top on table redraw
-        /* table.on('draw', function() {
-            $('html, body').animate({
-                scrollTop: 0
-            }, 10);
-        }); */
     }
 });
 
 // Adjust columns on window resize
-$(window).on('resize', function () {
-    if (table) table.columns.adjust();
+let resizeTimer;
+$(window).on('resize', function () { 
+        if (table) { 
+            table.columns.adjust();
+
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function () {
+                table.columns.adjust().draw(false);
+            }, 150);
+        }
+    
+});
+
+// Close filter dropdown on mousewheel
+$(document).on('mousedown', function(e) {
+    if (currentlyOpenDropdown) {
+        const isClickInsideMenu = $(e.target).closest('.multi-select-options').length > 0;
+        const isClickOnButton = $(e.target).closest('.multi-select-dropdown').length > 0;
+        
+        if (!isClickInsideMenu && !isClickOnButton) {
+            currentlyOpenDropdown.removeClass('show').hide();
+            currentlyOpenDropdown = null;
+        }
+    }
+});
+
+// Close filter dropdown on scroll (vertical / horizontal)
+$(window).on('scroll', function(e) {
+    if (currentlyOpenDropdown && !isFilteringInProgress) {
+        const activeEl = document.activeElement;
+        const isFocusInDropdown = $(activeEl).closest('.multi-select-options').length > 0;
+        
+        if (!isFocusInDropdown) {
+            currentlyOpenDropdown.removeClass('show').hide();
+            currentlyOpenDropdown = null;
+        }
+    }
 });
