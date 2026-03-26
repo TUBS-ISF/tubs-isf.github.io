@@ -87,6 +87,8 @@ function createMultiSelect(container, options, column) {
         e.stopPropagation();
         optionsContainer.removeClass('show').hide();
         $('body').removeClass('modal-open');
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
         currentlyOpenDropdown = null;
     });
     
@@ -178,6 +180,9 @@ function createMultiSelect(container, options, column) {
             }, 100);
             
             optionsContainer.removeClass('show').hide();
+            $('body').removeClass('modal-open');
+            document.body.style.overflow = '';
+            document.documentElement.style.overflow = '';
             currentlyOpenDropdown = null;
 
             e.preventDefault();

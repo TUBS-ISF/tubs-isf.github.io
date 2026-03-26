@@ -708,7 +708,11 @@ body > .multi-select-options.show {
   }
 
   body.modal-open {
-    overflow: hidden;
+    overflow: hidden !important;
+  }
+
+  body:not(.modal-open) {
+    overflow: auto;
   }
 
   body > .multi-select-options {
