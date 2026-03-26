@@ -100,7 +100,7 @@ function createMultiSelect(container, options, column) {
         $('body').removeClass('modal-open');
 
         const isVisible = optionsContainer.hasClass('show');
-        const isMobile = window.innerWidth <= 768;
+        const isMobile = window.innerWidth <= 576;
         
         if (!isVisible) {
             optionsContainer.css({
@@ -562,7 +562,7 @@ $(window).on('scroll wheel touchmove', function(e) {
     if (isFilteringInProgress) return;
 
     // Mobile - specific
-    if (window.innerWidth <= 768) return;
+    if (window.innerWidth <= 576) return;
 
     const isScrollInsideDropdown = $(e.target).closest('.multi-select-options').length > 0;
 

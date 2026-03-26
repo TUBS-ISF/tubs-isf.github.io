@@ -325,14 +325,10 @@ div.dataTables_paginate {
 
 .dataTables_length select {
   appearance: none !important;
-  -webkit-appearance: none !important;
-  -moz-appearance: none !important;
-  
   background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E") !important;
   background-repeat: no-repeat !important;
   background-position: right 0.75rem center !important;
   background-size: 12px 10px !important;
-  
   padding: 0 2rem 0 0.75rem !important;
   min-width: 85px;
   cursor: pointer;
@@ -397,8 +393,6 @@ div.dataTables_paginate {
   background-repeat: no-repeat;
   background-position: right 0.75rem center;
   background-size: 16px 12px;
-  -webkit-appearance: none;
-  -moz-appearance: none;
   appearance: none;
   user-select: none;
   pointer-events: auto !important;
