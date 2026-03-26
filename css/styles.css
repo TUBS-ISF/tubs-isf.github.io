@@ -3,8 +3,8 @@
  * Custom styles for DataTables with multi-select dropdown filters
  * 
  * @author Lennart Pape
- * @date 2026-03-24
- * @version 2.0.0
+ * @date 2026-03-26
+ * @version 2.1.0
  */
 
 
@@ -284,6 +284,32 @@ table.dataTable thead tr:nth-child(2) th .multi-select-dropdown {
   overscroll-behavior-x: none !important;
 }
 
+/* Search-Filter for each Dropdown */
+.dropdown-search-wrapper {
+  position: sticky;
+  top: 0;
+  background: white;
+  padding: 10px;
+  z-index: 100;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 5px;
+}
+
+.dropdown-search-input {
+  width: 100% !important;
+  padding: 8px 12px !important;
+  border: 1px solid #ddd !important;
+  border-radius: 4px !important;
+  font-size: 0.85rem !important;
+  outline: none !important;
+  box-sizing: border-box !important;
+}
+
+.dropdown-search-input:focus {
+  border-color: var(--isf-blue) !important;
+  box-shadow: 0 0 0 2px rgba(0, 63, 87, 0.1) !important;
+}
+
 /* Controls */
 div.dataTables_length,
 div.dataTables_filter {
@@ -325,7 +351,7 @@ div.dataTables_paginate {
 
 .dataTables_length select {
   appearance: none !important;
-  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E") !important;
+  background-image: url("../img/chevron-down.svg") !important;
   background-repeat: no-repeat !important;
   background-position: right 0.75rem center !important;
   background-size: 12px 10px !important;
@@ -389,7 +415,7 @@ div.dataTables_paginate {
   justify-content: space-between;
   align-items: center;
   position: relative;
-  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+  background-image: url("../img/chevron-down.svg");
   background-repeat: no-repeat;
   background-position: right 0.75rem center;
   background-size: 16px 12px;
@@ -475,6 +501,19 @@ body > .multi-select-options.show {
 .multi-select-option.selected {
   background-color: var(--isf-blue) !important;
   color: white !important;
+}
+
+.multi-select-option.hidden {
+  display: none !important;
+}
+
+.multi-select-options {
+  padding-top: 0 !important;
+  /* min-height: 250px;  */
+  max-height: 350px; 
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 

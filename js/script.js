@@ -6,8 +6,8 @@
  * only the rows that match the selected criteria.
  * 
  * @author Lennart Pape
- * @date 2026-03-24
- * @version 2.0.0
+ * @date 2026-03-26
+ * @version 2.1.0
  * @requires jQuery, DataTables, PapaParse, Bootstrap
  */
 
@@ -54,10 +54,21 @@ function updateDropdownText(dropdown, filters) {
 }
 
 // Create multi-select dropdown for column filtering
-function createMultiSelect(container, options, column) {
+function createMultiSelect(container, options, column, showSearch = true) {
     const multiSelect = $('<div class="multi-select">');
     const dropdown = $('<div class="multi-select-dropdown"><span class="dropdown-text">All</span></div>');
     const optionsContainer = $('<div class="multi-select-options">');
+    const searchWrapper = $('<div class="dropdown-search-wrapper"></div>');
+    const searchInput = $('<input type="text" class="dropdown-search-input" placeholder="Search...">');
+
+    // Search
+    if (showSearch) {
+        searchWrapper.append(searchInput);
+        optionsContainer.prepend(searchWrapper);
+    } else {
+        optionsContainer.css('padding-top', '10px');
+    }
+    
     
     // Unique IDs for tracking and syncing dropdown state
     const uniqueId = 'dropdown-' + Date.now() + '-' + Math.random().toString(36).slice(2, 11);
@@ -76,6 +87,26 @@ function createMultiSelect(container, options, column) {
         const optionDiv = $('<div class="multi-select-option" data-value="' + option + '">' + option + '</div>');
         optionDiv.attr('title', option);
         optionsContainer.append(optionDiv);
+    });
+
+    // Create Search-filter in dropdowns of table
+    searchInput.on('input', function () {
+        const searchTerm = $(this).val().toLowerCase();
+
+        optionsContainer.find('.multi-select-option').each(function () {
+            if ($(this).data('value') === '') {
+                $(this).removeClass('hidden');
+                return;
+            }
+            
+            const text = $(this).text().toLowerCase();
+
+            if (text.includes(searchTerm)) {
+                $(this).removeClass('hidden');
+            } else {
+                $(this).addClass('hidden');
+            }
+        });
     });
 
     const closeBtn = $('<div class="multi-select-close-btn">Apply</div>');
@@ -103,6 +134,11 @@ function createMultiSelect(container, options, column) {
         const isMobile = window.innerWidth <= 576;
         
         if (!isVisible) {
+
+            // reset search
+            searchInput.val('');
+            optionsContainer.find('.multi-select-option').removeClass('hidden');
+
             optionsContainer.css({
                 'display': 'block',
                 'visibility': 'hidden',
@@ -136,6 +172,13 @@ function createMultiSelect(container, options, column) {
             }    
             
             currentlyOpenDropdown = optionsContainer;
+
+            // Set focus on search field when opening dropdown
+            if (showSearch) {
+                setTimeout(function () {
+                    optionsContainer.find('.dropdown-search-input').focus();
+                }, 100);
+            }
         } else {
             optionsContainer.removeClass('show').hide();
             $('body').removeClass('modal-open');
@@ -502,7 +545,10 @@ Papa.parse("data/literature.csv", {
                                 .sort();
                         }
 
-                        createMultiSelect(container, allValues, column);
+                        // Create Multi-Select Dropdown with Search for all columns except for specified ones
+                        const columnsWithoutSearch = ["Year", "Category"];
+                        const shouldShowSearch = !columnsWithoutSearch.includes(columnTitle.trim());
+                        createMultiSelect(container, allValues, column, shouldShowSearch);
                     });
                 }, 100);
             },
