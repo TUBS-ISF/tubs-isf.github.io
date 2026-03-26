@@ -796,18 +796,28 @@ body > .multi-select-options.show {
     padding: 0.75rem 0.5rem !important; 
     min-height: auto !important; 
     font-size: 0.9rem !important;
+    overflow: hidden !important;
+    word-break: break-word !important;
   }
 
   .filter-badge {
-    display: inline-flex !important;
-    align-items: center;
+    display: flex !important;
+    align-items: center !important;
     font-size: 0.85rem !important;
     padding: 0.4rem 0.75rem !important;
     margin: 2px !important;
     border-radius: 16px !important;
     background-color: #f0f0f0;
-    white-space: nowrap;
+    white-space: normal !important;
+    word-break: break-word !important;
     width: auto !important;
+    max-width: 100% !important;
+  }
+
+  .filter-badge .remove {
+    margin-left: auto !important;
+    padding-left: 0.75rem !important;
+    flex-shrink: 0 !important;
   }
 
   .clear-all-btn {
