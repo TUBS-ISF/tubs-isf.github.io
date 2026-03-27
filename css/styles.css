@@ -244,7 +244,6 @@ table.dataTable thead {
 thead th {
   overflow: visible !important;
   position: relative;
-  pointer-events: auto !important;
 }
 
 table.dataTable thead tr:first-child th {
@@ -252,12 +251,10 @@ table.dataTable thead tr:first-child th {
   vertical-align: middle;
   position: relative;
   z-index: 10 !important;
-  pointer-events: auto !important;
 }
 
 table.dataTable thead tr:nth-child(2) th {
   overflow: visible !important;
-  pointer-events: auto !important;
   white-space: nowrap;
   z-index: 20 !important;
   position: relative;
@@ -397,7 +394,7 @@ div.dataTables_paginate {
   position: relative;
   width: 100%;
   max-width: 100%;
-  pointer-events: auto !important;
+/*   pointer-events: auto !important; */
   z-index: 100 !important;
 }
 
@@ -421,7 +418,7 @@ div.dataTables_paginate {
   background-size: 16px 12px;
   appearance: none;
   user-select: none;
-  pointer-events: auto !important;
+/*   pointer-events: auto !important; */
   z-index: 100 !important;
   width: 100%;
   max-width: 100%;
@@ -471,7 +468,7 @@ body > .multi-select-options {
 
   overflow-x: hidden;
   overflow-y: auto !important;
-  z-index: 10000 !important;
+  z-index: 1000 !important;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
   box-sizing: border-box;
 }
@@ -769,14 +766,6 @@ body > .multi-select-options.show {
     z-index: 10001 !important; 
     overscroll-behavior: contain; 
     background: white;
-  }
-
-  .multi-select-option {
-    font-size: 0.9rem !important;
-    padding: 0.75rem 0.6rem !important;
-    white-space: normal !important;
-    line-height: 1.4 !important;
-    word-break: break-word !important;
   }
 
   /* DataTable Controls */
