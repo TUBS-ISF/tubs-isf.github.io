@@ -184,8 +184,8 @@ function createMultiSelect(container, options, column, showSearch = true) {
             
             currentlyOpenDropdown = optionsContainer;
 
-            // Set focus on search field when opening dropdown
-            if (showSearch) {
+            // Set focus on search field when opening dropdown (only in desktop-mode)
+            if (showSearch && window.innerWidth > 576) {
                 setTimeout(function () {
                     optionsContainer.find('.dropdown-search-input').focus();
                 }, 100);
