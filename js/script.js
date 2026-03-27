@@ -53,7 +53,31 @@ function updateDropdownText(dropdown, filters) {
     }
 }
 
-// Create multi-select dropdown for column filtering
+// Reposition dropdown menu relative to the edge of the screen (depending on the available space)
+function repositionDropdown(dropdown, optionsContainer) {
+    const rect = dropdown[0].getBoundingClientRect();
+    const menuWidth = optionsContainer.outerWidth();
+    const menuHeight = optionsContainer.outerHeight();
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+
+    let leftPosition = rect.left;
+    if (rect.left + menuWidth > windowWidth) {
+        leftPosition = rect.right - menuWidth;
+        if (leftPosition < 0) leftPosition = 10;
+    }
+
+    let topPosition = rect.bottom + 2;
+    if (rect.bottom + menuHeight > windowHeight) {
+        topPosition = rect.top - menuHeight - 2;
+    }
+
+    optionsContainer.css({
+        'top': topPosition + 'px',
+        'left': leftPosition + 'px'
+    });
+}
+
 function createMultiSelect(container, options, column, showSearch = true) {
     const multiSelect = $('<div class="multi-select">');
     const dropdown = $('<div class="multi-select-dropdown"><span class="dropdown-text">All</span></div>');
@@ -135,7 +159,7 @@ function createMultiSelect(container, options, column, showSearch = true) {
         
         if (!isVisible) {
 
-            // reset search
+            // Reset search befor reopening dorpdown
             searchInput.val('');
             optionsContainer.find('.multi-select-option').removeClass('hidden');
 
@@ -154,21 +178,8 @@ function createMultiSelect(container, options, column, showSearch = true) {
 
                 $('body').addClass('modal-open');
             } else {
-                const rect = dropdown[0].getBoundingClientRect();
-                const menuWidth = optionsContainer.outerWidth();
-                const windowWidth = window.innerWidth;
-
-                let leftPosition = rect.left;
-
-                if (rect.left + menuWidth > windowWidth) {
-                    leftPosition = rect.right - menuWidth;
-                    if (leftPosition < 0) leftPosition = 10;
-                } 
-                optionsContainer.css({
-                    'visibility': 'visible',
-                    'top': (rect.bottom + 2) + 'px',
-                    'left': leftPosition + 'px'
-                }).addClass('show');
+                optionsContainer.css({'visibility': 'visible'}).addClass('show');
+                repositionDropdown(dropdown, optionsContainer);
             }    
             
             currentlyOpenDropdown = optionsContainer;
@@ -267,11 +278,7 @@ function createMultiSelect(container, options, column, showSearch = true) {
             // Reposition after table redraw
             setTimeout(function() {
                 if (optionsContainer.hasClass('show')) {
-                    const rect = dropdown[0].getBoundingClientRect();
-                    optionsContainer.css({
-                        'top': (rect.bottom + 2) + 'px',
-                        'left': rect.left + 'px'
-                    });
+                    repositionDropdown(dropdown, optionsContainer);
                 }
             }, 50);
         }
@@ -295,13 +302,7 @@ function createMultiSelect(container, options, column, showSearch = true) {
     // Reposition on window resize
     $(window).on('resize', function() {
         if (optionsContainer.hasClass('show')) {
-            const rect = dropdown[0].getBoundingClientRect();
-            const containerWidth = dropdown.outerWidth();
-            optionsContainer.css({
-                'top': (rect.bottom + 2) + 'px',
-                'left': rect.left + 'px',
-                'width': containerWidth + 'px'
-            });
+            repositionDropdown(dropdown, optionsContainer);
         }
     });
     
@@ -545,8 +546,23 @@ Papa.parse("data/literature.csv", {
                                 .sort();
                         }
 
-                        // Create Multi-Select Dropdown with Search for all columns except for specified ones
-                        const columnsWithoutSearch = ["Year", "Category"];
+                        // Create Multi-Select Dropdown with Search-Functionality for all columns except for specified ones
+                        const columnsWithoutSearch = [
+                            // All literature surveys
+                            "Year",     
+                            
+                            // PL-Surveys                    
+                            "Category",
+                            
+                            // PL-Analyses                     
+                            "SE Layer",      
+                            
+                            // PL-Sampling               
+                            "Input Data",                   
+                            "Algorithm Category",           
+                            "Coverage",                     
+                            "Evaluation",                    
+                        ];                  
                         const shouldShowSearch = !columnsWithoutSearch.includes(columnTitle.trim());
                         createMultiSelect(container, allValues, column, shouldShowSearch);
                     });

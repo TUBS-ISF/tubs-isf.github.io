@@ -127,7 +127,7 @@ header h1 {
 }
 
 
-/* CARDS */
+/* CARDS: LANDING PAGE*/
 
 .card {
   border: none;
@@ -451,23 +451,29 @@ div.dataTables_paginate {
   max-width: none !important;
 }
 
-/* Options Menu */
+/* Options Menu - Dropdown Container*/
 body > .multi-select-options {
   position: fixed !important;
   background: white !important;
   border: 1px solid #dee2e6 !important;
   border-radius: 0.375rem !important;
-  max-height: 200px !important;
+
+  display: none;
+  flex-direction: column;
+
+  min-height: unset !important;
+  max-height: 350px !important;
+  height: auto !important; 
+
+  min-width: 110px !important;
+  max-width: 450px !important;
+  width: auto !important;
+
   overflow-x: hidden;
   overflow-y: auto !important;
   z-index: 10000 !important;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-  display: none;
-  min-width: 110px !important;
-  max-width: 265px !important;
-  width: auto !important;
   box-sizing: border-box;
-  margin-left: 0;
 }
 
 body > .multi-select-options.align-right {
@@ -480,18 +486,25 @@ body > .multi-select-options.show {
 
 /* Individual Options */
 .multi-select-option {
-  padding: 0.6rem 0.75rem !important;
+  padding: 0.65rem 1rem !important;
   cursor: pointer;
   font-size: 0.875rem;
   font-weight: normal;
   user-select: none;
+
   word-break: break-word !important;
   white-space: normal !important;
-  line-height: 1.3 !important;
+  line-height: 1.4 !important;
   hyphens: auto !important;
   -webkit-hyphens: auto;
+  
   display: block !important;
   border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.15s ease;
+}
+
+.multi-select-option:last-child {
+  border-bottom: none;
 }
 
 .multi-select-option:hover {
@@ -505,15 +518,6 @@ body > .multi-select-options.show {
 
 .multi-select-option.hidden {
   display: none !important;
-}
-
-.multi-select-options {
-  padding-top: 0 !important;
-  /* min-height: 250px;  */
-  max-height: 350px; 
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
 }
 
 
