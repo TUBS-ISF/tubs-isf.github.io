@@ -625,21 +625,13 @@ $(window).on('resize', function () {
 // Close filter dropdown on mousewheel and touchstart
 $(document).on('mousedown touchstart', function(e) {
     if (currentlyOpenDropdown) {
-        const container = currentlyOpenDropdown[0];
-        const rect = container.getBoundingClientRect();
-        
-        const clientX = e.clientX || (e.originalEvent && e.originalEvent.touches ? e.originalEvent.touches[0].clientX : 0);
-        const clientY = e.clientY || (e.originalEvent && e.originalEvent.touches ? e.originalEvent.touches[0].clientY : 0);
+        const dropdownElement = currentlyOpenDropdown[0];
 
-        const isInsideWhiteBox = 
-            clientX >= rect.left && 
-            clientX <= rect.right && 
-            clientY >= rect.top && 
-            clientY <= rect.bottom;
-
-        const isClickOnButton = $(e.target).closest('.multi-select-dropdown').length > 0;
+        const isClickInside = dropdownElement.contains(e.target) || 
+                          $(e.target).closest('.multi-select-dropdown').length > 0;
         
-        if (!isInsideWhiteBox && !isClickOnButton) {
+        if (!isClickInside) {
+            currentlyOpenDropdown[0].scrollTop = 0;
             currentlyOpenDropdown.removeClass('show').hide();
             $('body').removeClass('modal-open');
             currentlyOpenDropdown = null;
