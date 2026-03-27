@@ -584,13 +584,15 @@ Papa.parse("data/literature.csv", {
                             "Category",
                             
                             // PL-Analyses                     
-                            "SE Layer",      
+                            "SE Layer",
+                            "Specification Strategy",      
                             
                             // PL-Sampling               
                             "Input Data",                   
                             "Algorithm Category",           
                             "Coverage",                     
-                            "Evaluation",                    
+                            "Evaluation",
+                            "Application",              
                         ];                  
                         const shouldShowSearch = !columnsWithoutSearch.includes(columnTitle.trim());
                         createMultiSelect(container, allValues, column, shouldShowSearch);
