@@ -22,7 +22,18 @@ let table;
 let currentlyOpenDropdown = null;
 let isFilteringInProgress = false;
 
-// Update dropdown display text based on selected filters
+/**
+ * Updates the visual label of the dropdown trigger based on the active selection.
+ * Handles three states:
+ * 1. "All": No filters are active.
+ * 2. Single value: Displays the value (truncated if it exceeds maxLengthOneFilter).
+ * 3. Multiple values: Displays the first value truncated, followed by a count (+X) of additional active filters.
+ * 
+ * Sets the 'title' attribute to the full list of selected values for a native tooltip.
+ * 
+ * @param {jQuery} dropdown - The trigger element containing the label to be updated. 
+ * @param {Array<string>} filters - The array of currently selected filter values for this column.
+ */
 function updateDropdownText(dropdown, filters) {
     if (filters.length === 0) {
         dropdown.find('.dropdown-text').text('All').removeClass('selected-values').removeAttr('title');
@@ -53,7 +64,15 @@ function updateDropdownText(dropdown, filters) {
     }
 }
 
-// Reposition dropdown menu relative to the edge of the screen (depending on the available space)
+/**
+ * Calculates the screen position for the dropdown menu.
+ * Implements a basic collision detection algorithm to ensure:
+ * - The menu does not overflow the right edge of the viewport.
+ * - The menu flips to open upwards if there is insufficient space at the bottom.
+ * 
+ * @param {jQuery} dropdown - The trigger element (the button/input). 
+ * @param {jQuery} optionsContainer - The floating menu container to be positioned.
+ */
 function repositionDropdown(dropdown, optionsContainer) {
     const rect = dropdown[0].getBoundingClientRect();
     const menuWidth = optionsContainer.outerWidth();
@@ -78,6 +97,16 @@ function repositionDropdown(dropdown, optionsContainer) {
     });
 }
 
+/**
+ * Creates a custom multi-select dropdown menu for a specific table column.
+ * Generates the HTML structure, initializes the internal search functionality,
+ * and binds event handlers for option selection and "Apply" logic.
+ * 
+ * @param {jQuery} container - The target header element (TH) where the dropdown trigger is rendered.
+ * @param {Array<string>} options - List of unique values to be displayed as filterable options.
+ * @param {Object} column - The DataTables API object for the current column.
+ * @param {boolean} [showSearch=true] - Determines whether a text search input is included in the dropdown.
+ */
 function createMultiSelect(container, options, column, showSearch = true) {
     const multiSelect = $('<div class="multi-select">');
     const dropdown = $('<div class="multi-select-dropdown"><span class="dropdown-text">All</span></div>');
@@ -310,41 +339,41 @@ function createMultiSelect(container, options, column, showSearch = true) {
     $('body').append(optionsContainer);
 }
 
-// Apply filters to table columns
+/**
+ * Aggregates and applies active filters to DataTable columns.
+ * - "Year": Uses strict matching (^value$) to prevent partial hits in list.
+ * - Others: Uses boundary logic (^|,\s*) to support comma-separated lists and 
+ * properly handle special characters like hyphens in names (e.g., "Hans-Peter").
+ */
 function applyFilters() {
     table.columns().every(function() {
         const column = this;
-        const columnTitle = column.header().textContent;
+        const columnTitle = column.header().textContent.trim();
         const filters = activeFilters[columnTitle] || [];
         
         if (filters.length === 0) {
             column.search('', true, false);
         } else {
-            if (columnTitle === "Year") {
-                // Exact match for Year column
-                const pattern = '^(' + filters
-                .map(f => $.fn.dataTable.util.escapeRegex(f.toString()))
-                .join('|') + ')$';
-                column.search(pattern, true, false);
-            } else {
-                // Word boundaries only for alphanumeric values, otherwise match anywhere
-                const pattern = '(' + filters
-                .map(f => { 
-                    const escaped = $.fn.dataTable.util.escapeRegex(f);
-                    const startsWithWord = /^\w/.test(f);
-                    const endsWithWord = /\w$/.test(f);
-                    
-                    return (startsWithWord ? '\\b' : '') + escaped + (endsWithWord ? '\\b' : '');
-                })
-                .join('|') + ')';
-                column.search(pattern, true, false);
-            }
+            const pattern = filters.map(f => {
+                const escaped = $.fn.dataTable.util.escapeRegex(f.toString());
+                return columnTitle === "Year" ? `^${escaped}$` : `(^|,\\s*)${escaped}(\\s*,|$)`;
+            }).join("|");
+            
+            column.search(`(${pattern})`,true, false);
         }
     });
     table.draw();
 }
 
-// Update active filters display
+/**
+ * Synchronizes the active filter display area (badges) with the current filter state.
+ * Iterates through the activeFilters object and:
+ * 1. Generates a removable badge for every selected filter value.
+ * 2. Toggles the visibility of the "Clear All" button.
+ * 3. Shows a placeholder message when no filters are active.
+ * 
+ * Each badge includes data attributes for column and value to facilitate easy removal when clicked.
+ */
 function updateActiveFiltersDisplay() {
     const container = $('#active-filters-container');
     const clearBtn = $('#clear-all-filters');
