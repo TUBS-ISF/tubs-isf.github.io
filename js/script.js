@@ -208,6 +208,7 @@ function createMultiSelect(container, options, column, showSearch = true) {
                 $('body').addClass('modal-open');
             } else {
                 optionsContainer.css({'visibility': 'visible'}).addClass('show');
+                optionsContainer.css({'min-width': dropdown.outerWidth() + 'px'});
                 repositionDropdown(dropdown, optionsContainer);
             }    
             
@@ -355,8 +356,8 @@ function applyFilters() {
             column.search('', true, false);
         } else {
             const pattern = filters.map(f => {
-                const escaped = $.fn.dataTable.util.escapeRegex(f.toString());
-                return columnTitle === "Year" ? `^${escaped}$` : `(^|,\\s*)${escaped}(\\s*,|$)`;
+                const escaped = DataTable.util.escapeRegex(f.toString());
+                return columnTitle === "Year" ? `^${escaped}$` : String.raw`(^|,\s*)${escaped}(\s*,|$)`;
             }).join("|");
             
             column.search(`(${pattern})`,true, false);
@@ -415,29 +416,13 @@ $(document).on('click', '.filter-badge', function() {
     applyFilters();
     updateActiveFiltersDisplay();
     
-    // Find and update the correct header dropdown
-    let targetHeader = null;
-    $('#csvTable thead tr:first th').each(function() {
-        if ($(this).text().trim() === column) {
-            const columnIndex = $(this).index();
-            targetHeader = $('.dataTables_scrollHead thead tr:nth-child(2) th').eq(columnIndex);
-            if (!targetHeader.length) {
-                targetHeader = $('#csvTable thead tr:nth-child(2) th').eq(columnIndex);
-            }
-        }
-    });
+    const triggerDropdown = $('[data-column="' + column + '"].multi-select-dropdown');
+    if (triggerDropdown.length) {
+        updateDropdownText(triggerDropdown, activeFilters[column] || []);
+    }
     
     // Update options in body-appended container
     const optionsContainer = $('body > .multi-select-options[data-column="' + column + '"]');
-    
-    if (targetHeader && targetHeader.length) {
-        targetHeader.find(`.multi-select-option[data-value="${value}"]`).removeClass('selected');
-        
-        if (activeFilters[column].length === 0) {
-            targetHeader.find('.multi-select-option[data-value=""]').addClass('selected');
-        }
-        updateDropdownText(targetHeader, activeFilters[column]);
-    }
     
     // Update body-appended container highlighting
     if (optionsContainer.length) {
@@ -478,6 +463,7 @@ Papa.parse("data/literature.csv", {
                 return { 
                     title: key, 
                     data: key, 
+                    className: 'dt-left',
                     render: { 
                         _: data => data.toString(), 
                     }
@@ -519,6 +505,7 @@ Papa.parse("data/literature.csv", {
 
         // Initialize DataTable
         table = $('#csvTable').DataTable({
+            deferRender: false,
             data: data,
             columns: columns,
             orderCellsTop: true,
@@ -541,17 +528,12 @@ Papa.parse("data/literature.csv", {
                         if (columnTitle === "Key") return;
                         
                         // Find filter container
-                        let container = $('.dataTables_scrollHead thead tr')
+                        let container = $(api.table().header())
+                            .find('tr')
                             .eq(1)
                             .find('th')
                             .eq(column.index());
                         
-                        if (!container.length) {
-                            container = $('#csvTable thead tr')
-                                .eq(1)
-                                .find('th')
-                                .eq(column.index());
-                        }
                         
                         if (!container.length) return;
                         
@@ -578,21 +560,21 @@ Papa.parse("data/literature.csv", {
                         // Create Multi-Select Dropdown with Search-Functionality for all columns except for specified ones
                         const columnsWithoutSearch = [
                             // All literature surveys
-                            "Year",     
+                            "Year",
                             
-                            // PL-Surveys                    
+                            // PL-Surveys
                             "Category",
-                            
-                            // PL-Analyses                     
+
+                            // PL-Analyses
                             "SE Layer",
-                            "Specification Strategy",      
+                            "Specification Strategy",
                             
-                            // PL-Sampling               
-                            "Input Data",                   
-                            "Algorithm Category",           
-                            "Coverage",                     
+                            // PL-Sampling
+                            "Input Data",
+                            "Algorithm Category",
+                            "Coverage",
                             "Evaluation",
-                            "Application",              
+                            "Application",
                         ];                  
                         const shouldShowSearch = !columnsWithoutSearch.includes(columnTitle.trim());
                         createMultiSelect(container, allValues, column, shouldShowSearch);
