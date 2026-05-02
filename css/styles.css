@@ -192,7 +192,7 @@ header h1 {
 .multi-select-close-btn {
   display: none;
   background: #007bff;
-  color: white;
+  color: black;
   text-align: center;
   padding: 10px;
   margin-top: 5px;
@@ -427,7 +427,6 @@ div.dt-search input[type="search"]::-webkit-search-clear-button {
   position: relative;
   width: 100%;
   max-width: 100%;
-/*   pointer-events: auto !important; */
   z-index: 100 !important;
 }
 
@@ -451,7 +450,6 @@ div.dt-search input[type="search"]::-webkit-search-clear-button {
   background-size: 16px 12px;
   appearance: none;
   user-select: none;
-/*   pointer-events: auto !important; */
   z-index: 100 !important;
   width: 100%;
   max-width: 100%;
@@ -626,7 +624,6 @@ body > .multi-select-options.show {
   div.dt-info,
   div.dt-paging {
     width: 100%;
-    /*margin-bottom: 0.5rem;*/
     justify-content: center;
   }
 }
@@ -785,15 +782,12 @@ body > .multi-select-options.show {
     top: 50% !important;
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
-    
     width: 90vw !important;
     max-width: 400px !important;
     max-height: 70vh !important;
-
     border-radius: 12px !important;
     box-shadow: 0 0 0 100vmax rgba(0,0,0,0.5), 0 10px 30px rgba(0,0,0,0.25) !important;
     overflow-y: auto;
-    position: fixed !important;
     z-index: 10001 !important; 
     overscroll-behavior: contain; 
     background: white;
@@ -861,7 +855,6 @@ body > .multi-select-options.show {
     bottom: 0;
     left: 0;
     right: 0;
-    border-top: 1px solid #ddd;
     z-index: 10;
     border-radius: 0 0 10px 10px; 
     margin-top: 0; 

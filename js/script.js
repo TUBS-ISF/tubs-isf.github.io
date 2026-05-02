@@ -198,9 +198,13 @@ function createMultiSelect(container, options, column, showSearch = true) {
         const isVisible = optionsContainer.hasClass('show');
         const isMobile = window.innerWidth <= 576;
         
-        if (!isVisible) {
+        if (isVisible) {
+            optionsContainer.removeClass('show').hide();
+            $('body').removeClass('modal-open');
+            currentlyOpenDropdown = null;
+        } else {
 
-            // Reset search befor reopening dorpdown
+            // Reset search before reopening dropdown
             searchInput.val('');
             optionsContainer.find('.multi-select-option').removeClass('hidden');
 
@@ -232,10 +236,6 @@ function createMultiSelect(container, options, column, showSearch = true) {
                     optionsContainer.find('.dropdown-search-input').focus();
                 }, 100);
             }
-        } else {
-            optionsContainer.removeClass('show').hide();
-            $('body').removeClass('modal-open');
-            currentlyOpenDropdown = null;
         }
     };
     
@@ -326,23 +326,8 @@ function createMultiSelect(container, options, column, showSearch = true) {
         }
     });
     
-    // Helper: Check if click is outside dropdown
-    const isOutsideDropdown = function(e) {
-        const clickedDropdown = $(e.target).closest('.multi-select-dropdown[data-dropdown-id="' + uniqueId + '"]').length > 0;
-        const clickedOptions = $(e.target).closest('.multi-select-options[data-dropdown-id="' + uniqueId + '"]').length > 0;
-        return !clickedDropdown && !clickedOptions;
-    };
-    
-    // Helper: Close dropdown
-    const closeDropdown = function() {
-        optionsContainer.removeClass('show');
-        if (currentlyOpenDropdown === optionsContainer) {
-            currentlyOpenDropdown = null;
-        }
-    };
-    
     // Reposition on window resize
-    $(window).on('resize', function() {
+    $(globalThis).on('resize', function() {
         if (optionsContainer.hasClass('show')) {
             repositionDropdown(dropdown, optionsContainer);
         }
@@ -360,19 +345,18 @@ function createMultiSelect(container, options, column, showSearch = true) {
  */
 function applyFilters() {
     table.columns().every(function() {
-        const column = this;
-        const columnTitle = column.header().textContent.trim();
+        const columnTitle = this.header().textContent.trim();
         const filters = activeFilters[columnTitle] || [];
         
         if (filters.length === 0) {
-            column.search('', true, false);
+            this.search('', true, false);
         } else {
             const pattern = filters.map(f => {
                 const escaped = DataTable.util.escapeRegex(f.toString());
                 return columnTitle === "Year" ? `^${escaped}$` : String.raw`(^|,\s*)${escaped}(\s*,|$)`;
             }).join("|");
             
-            column.search(`(${pattern})`,true, false);
+            this.search(`(${pattern})`,true, false);
         }
     });
     table.draw();
@@ -516,6 +500,65 @@ Papa.parse("data/literature.csv", {
         thead.innerHTML = headerRow + filterRow;
 
         // Initialize DataTable
+        function processColumn(column, api) {
+            const columnTitle = columns[column.index()].title;
+            
+            // Skip certain columns for filtering
+            if (columnTitle === "Title") return;
+            if (columnTitle === "Key") return;
+            
+            // Find filter container
+            let container = $(api.table().header())
+                .find('tr')
+                .eq(1)
+                .find('th')
+                .eq(column.index());
+            
+            
+            if (!container.length) return;
+            
+            // Extract unique values
+            let allValues = [];
+            column.data().each(function (d) {
+                if (d !== null && d !== undefined) {
+                    const value = d.toString().trim();
+                    allValues = allValues.concat(columnTitle === "Year" ? [value] : value.split(/,\s*/));
+                }
+            });
+            
+            // Sort values
+            if (columnTitle === "Year") {
+                allValues = [...new Set(allValues)]
+                    .filter(Boolean)
+                    .sort((a, b) => Number.parseInt(b) - Number.parseInt(a));
+            } else {
+                allValues = [...new Set(allValues)]
+                    .filter(Boolean)
+                    .sort();
+            }
+
+            // Create Multi-Select Dropdown with Search-Functionality for all columns except for specified ones
+            const columnsWithoutSearch = [
+                // All literature surveys
+                "Year",
+                
+                // PL-Surveys
+                "Category",
+
+                // PL-Analyses
+                "SE Layer",
+                "Specification Strategy",
+                
+                // PL-Sampling
+                "Input Data",
+                "Algorithm Category",
+                "Coverage",
+                "Evaluation",
+                "Application",
+            ];                  
+            const shouldShowSearch = !columnsWithoutSearch.includes(columnTitle.trim());
+            createMultiSelect(container, allValues, column, shouldShowSearch);
+        }
         table = $('#csvTable').DataTable({
             deferRender: false,
             data: data,
@@ -532,64 +575,7 @@ Papa.parse("data/literature.csv", {
                 
                 setTimeout(function() {
                     api.columns().every(function () {
-                        const column = this;
-                        const columnTitle = columns[column.index()].title;
-                        
-                        // Skip certain columns for filtering
-                        if (columnTitle === "Title") return;
-                        if (columnTitle === "Key") return;
-                        
-                        // Find filter container
-                        let container = $(api.table().header())
-                            .find('tr')
-                            .eq(1)
-                            .find('th')
-                            .eq(column.index());
-                        
-                        
-                        if (!container.length) return;
-                        
-                        // Extract unique values
-                        let allValues = [];
-                        column.data().each(function (d) {
-                            if (d !== null && d !== undefined) {
-                                const value = d.toString().trim();
-                                allValues = allValues.concat(columnTitle === "Year" ? [value] : value.split(/[,]\s*/));
-                            }
-                        });
-                        
-                        // Sort values
-                        if (columnTitle === "Year") {
-                            allValues = [...new Set(allValues)]
-                                .filter(val => val)
-                                .sort((a, b) => parseInt(b) - parseInt(a));
-                        } else {
-                            allValues = [...new Set(allValues)]
-                                .filter(val => val)
-                                .sort();
-                        }
-
-                        // Create Multi-Select Dropdown with Search-Functionality for all columns except for specified ones
-                        const columnsWithoutSearch = [
-                            // All literature surveys
-                            "Year",
-                            
-                            // PL-Surveys
-                            "Category",
-
-                            // PL-Analyses
-                            "SE Layer",
-                            "Specification Strategy",
-                            
-                            // PL-Sampling
-                            "Input Data",
-                            "Algorithm Category",
-                            "Coverage",
-                            "Evaluation",
-                            "Application",
-                        ];                  
-                        const shouldShowSearch = !columnsWithoutSearch.includes(columnTitle.trim());
-                        createMultiSelect(container, allValues, column, shouldShowSearch);
+                        processColumn(this, api);
                     });
                 }, 100);
             },
@@ -606,7 +592,7 @@ Papa.parse("data/literature.csv", {
 
 // Adjust columns on window resize
 let resizeTimer;
-$(window).on('resize', function () { 
+$(globalThis).on('resize', function () { 
         if (table) { 
             table.columns.adjust();
 
@@ -636,7 +622,7 @@ $(document).on('mousedown touchstart', function(e) {
 });
 
 // Close filter dropdown on scroll (vertical / horizontal)
-$(window).on('scroll wheel touchmove', function(e) {
+$(globalThis).on('scroll wheel touchmove', function(e) {
     if (!currentlyOpenDropdown) return;
     if (isFilteringInProgress) return;
 
