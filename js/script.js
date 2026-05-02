@@ -69,6 +69,8 @@ function updateDropdownText(dropdown, filters) {
  * Implements a basic collision detection algorithm to ensure:
  * - The menu does not overflow the right edge of the viewport.
  * - The menu flips to open upwards if there is insufficient space at the bottom.
+ * - When opening upwards, the menu is anchored to the bottom edge of the trigger
+ *   so it grows upwards dynamically (e.g. when search filters reduce the options).
  * 
  * @param {jQuery} dropdown - The trigger element (the button/input). 
  * @param {jQuery} optionsContainer - The floating menu container to be positioned.
@@ -85,16 +87,26 @@ function repositionDropdown(dropdown, optionsContainer) {
         leftPosition = rect.right - menuWidth;
         if (leftPosition < 0) leftPosition = 10;
     }
+    
+    const spaceBelow = windowHeight - rect.bottom;
+    const spaceAbove = rect.top;
+    const opensUpward = spaceBelow < menuHeight && spaceAbove > spaceBelow;
 
-    let topPosition = rect.bottom + 2;
-    if (rect.bottom + menuHeight > windowHeight) {
-        topPosition = rect.top - menuHeight - 2;
+    optionsContainer.css({'top': '', 'bottom': ''});
+
+    if (opensUpward) {
+        optionsContainer.css({
+            'bottom': (windowHeight - rect.top + 2) + 'px',
+            'left': leftPosition + 'px',
+            top: 'auto'
+        });
+    } else {
+        optionsContainer.css({
+            'top': (rect.bottom + 2) + 'px',
+            'left': leftPosition + 'px',
+            'bottom': 'auto'
+        });
     }
-
-    optionsContainer.css({
-        'top': topPosition + 'px',
-        'left': leftPosition + 'px'
-    });
 }
 
 /**
