@@ -1,0 +1,11 @@
+{
+    "name": "isf-literature-surveys",
+    "version": "2.1.0",
+    "description": "ISF Literature Surveys",
+    "dependencies": {
+        "bootstrap": "5.3.8",
+        "datatables.net-bs5": "2.3.8",
+        "jquery": "3.7.1",
+        "papaparse": "5.4.1"
+    }
+}
