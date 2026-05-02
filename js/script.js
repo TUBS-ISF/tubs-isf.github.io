@@ -319,7 +319,7 @@ function createMultiSelect(container, options, column, showSearch = true) {
             
             // Reposition after table redraw
             setTimeout(function() {
-                if (optionsContainer.hasClass('show')) {
+                if (optionsContainer.hasClass('show') && window.innerWidth > 576) {
                     repositionDropdown(dropdown, optionsContainer);
                 }
             }, 50);
