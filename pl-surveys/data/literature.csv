@@ -1,5 +1,6 @@
 Authors,Venue,Year,Title,Category,Detailed,Further Tags,Key
 " Viplesh Dubey,  Manju Kaushik,  Satendra Kumar",IJSEM,2025,"Test Suite Reduction Techniques for Software Product Line Testing: A Survey","problem space, solution space","","",DKK:IJSEM25
+" Elias Kuiter,  Thomas Th&uuml;m,  Timo Kehrer",VAMOS,2025,"Teach Variability! A Modern University Course on Software Product Lines","problem space, solution space","","",KTK:VaMoS25
 " Raul Medeiros,  Jabier Martinez,  Oscar Diaz,  Jean-Remy Falleri",IST,2023,"Visualizations for the Evolution of Variant-Rich Systems: A Systematic Mapping Study","problem space, solution space","evolution","",MMDF:IST23
 " Jose Miguel Horcas-Aguilera,  Monica Pinto-Alarcon,  Lidia Fuentes-Fernandez",SOSYM,2023,"Empirical Analysis of the Tool Support for Software Product Lines","problem space, solution space","tool support","",HPF:SoSyM23
 " Oscar Aguayo,  Samuel Sepulveda",AS,2022,"Variability Management in Dynamic Software Product Lines for Self-Adaptive Systems&#8211;A Systematic Mapping","problem space, solution space","pl technique application","dynamic spl",AS:AS22
