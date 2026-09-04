@@ -3,8 +3,8 @@
  * Custom styles for DataTables with multi-select dropdown filters
  * 
  * @author Lennart Pape
- * @date 2026-03-26
- * @version 2.1.0
+ * @date 2026-09-04
+ * @version 2.2.0
  */
 
 
@@ -464,19 +464,25 @@ div.dt-search input[type="search"]::-webkit-search-clear-button {
 
 /* Dropdown Text */
 .dropdown-text {
-  display: block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex: 1 1 auto; 
-  min-width: 0;   
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
   width: 0;
   color: #495057;
   font-weight: normal;
 }
 
-.dropdown-text.selected-values {
-  max-width: none !important;
+.dropdown-text-value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.dropdown-text-count {
+  flex-shrink: 0;
+  margin-left: 3px;
 }
 
 /* Options Menu - Dropdown Container*/
@@ -519,13 +525,11 @@ body > .multi-select-options.show {
   font-size: 0.875rem;
   font-weight: normal;
   user-select: none;
-
   word-break: break-word !important;
   white-space: normal !important;
   line-height: 1.4 !important;
   hyphens: auto !important;
   -webkit-hyphens: auto;
-  
   display: block !important;
   border-bottom: 1px solid #f0f0f0;
   transition: background-color 0.15s ease;

@@ -6,8 +6,8 @@
  * only the rows that match the selected criteria.
  * 
  * @author Lennart Pape
- * @date 2026-03-26
- * @version 2.1.0
+ * @date 2026-09-04
+ * @version 2.2.0
  * @requires jQuery, DataTables, PapaParse, Bootstrap
  */
 
@@ -22,45 +22,139 @@ let table;
 let currentlyOpenDropdown = null;
 let isFilteringInProgress = false;
 
+const measureCanvas = document.createElement('canvas');
+const measureCtx = measureCanvas.getContext('2d');
+
 /**
- * Updates the visual label of the dropdown trigger based on the active selection.
- * Handles three states:
- * 1. "All": No filters are active.
- * 2. Single value: Displays the value (truncated if it exceeds maxLengthOneFilter).
- * 3. Multiple values: Displays the first value truncated, followed by a count (+X) of additional active filters.
- * 
- * Sets the 'title' attribute to the full list of selected values for a native tooltip.
+ * Builds a CSS font shorthand string from an element's computed style.
+ * Used to keep canvas text measurement in sync with the rendered font.
+ *
+ * @param {HTMLElement} el - Element whose font styles to read.
+ * @returns {string} CSS font shorthand
+ */
+function getElementFont(el) {
+    const style = window.getComputedStyle(el);
+    return `${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+}
+
+/**
+ * Measures the rendered pixel width of a text string for a given font.
+ *
+ * @param {string} text - Text to measure.
+ * @param {string} font - CSS font shorthand to measure with.
+ * @returns {number} Width in pixels.
+ */
+function getTextWidth(text, font) {
+    measureCtx.font = font;
+    return measureCtx.measureText(text).width;
+}
+
+
+/**
+ * Truncates text with an ellipsis to fit within maxWidth, using
+ * binary search to find the longest fitting substring.
+ *
+ * @param {string} text - Text to truncate.
+ * @param {number} maxWidth - Available width in pixels.
+ * @param {string} font - CSS font shorthand to measure with.
+ * @returns {string} Truncated text ending in "…", or "" if no space.
+ */
+function truncateToWidth(text, maxWidth, font) {
+    if (maxWidth <= 0) return '';
+    if (getTextWidth(text, font) <= maxWidth) return text;
+
+    let low = 0;
+    let high = text.length;
+    while (low < high) {
+        const mid = Math.ceil((low + high) / 2);
+        const candidate = text.slice(0, mid) + '…';
+        if (getTextWidth(candidate, font) <= maxWidth) {
+            low = mid;
+        } else {
+            high = mid - 1;
+        }
+    }
+    return low > 0 ? text.slice(0, low) + '…' : '…';
+}
+
+/**
+ * Updates the dropdown trigger label based on the active selection.
+ * Fits as many full values as possible into the available width; the
+ * next value is truncated with "…" if it partially fits, otherwise the
+ * remainder is summarized as "(+X)". Falls back to "All" if empty.
+ * Sets 'title' to the full filter list for a native tooltip, and stores
+ * the filters on the element's data so the label can be recalculated later.
  * 
  * @param {jQuery} dropdown - The trigger element containing the label to be updated. 
  * @param {Array<string>} filters - The array of currently selected filter values for this column.
  */
 function updateDropdownText(dropdown, filters) {
+    dropdown.data('filters', filters);
+
+    const textEl = dropdown.find('.dropdown-text');
+    textEl.empty().removeAttr('title');
+
     if (filters.length === 0) {
-        dropdown.find('.dropdown-text').text('All').removeClass('selected-values').removeAttr('title');
-    } else {
-        const firstValue = filters[0];
-        const remainingCount = filters.length - 1;
-        const maxLengthOneFilter = 20;
-        const maxLengthMoreFilters = 3;
+        textEl.text('All').removeClass('selected-values');
+        return;
+    }
 
-        let displayText;
+    const SAFETY_MARGIN = 4;
+    const MIN_PARTIAL_CHARS = 4;
+    const separator = ', ';
+    const fullText = filters.join(separator);
+    const font = getElementFont(textEl[0]);
+    const availableWidth = textEl[0].clientWidth - SAFETY_MARGIN;
 
-        if (remainingCount === 0) {
-            if (firstValue.length > maxLengthOneFilter) {
-                displayText = firstValue.substring(0, maxLengthOneFilter) + '...';
-            } else {
-                displayText = firstValue;
-            }
+    textEl.addClass('selected-values').attr('title', fullText);
+
+    // Fit as many full values as possible, reserving space for a "(+N)" suffix
+    let shownCount = 0;
+    for (let i = 0; i < filters.length; i++) {
+        const candidate = filters.slice(0, i + 1).join(separator);
+        const remainingAfter = filters.length - (i + 1);
+        const suffix = remainingAfter > 0 ? ` (+${remainingAfter})` : '';
+
+        if (getTextWidth(candidate + suffix, font) <= availableWidth) {
+            shownCount = i + 1;
         } else {
-            let truncatedFirst = firstValue.substring(0, maxLengthMoreFilters) + '...';
-            displayText = `${truncatedFirst} (+${remainingCount})`;
+            break;
         }
+    }
 
-        const fullText = filters.join(', ');
-        dropdown.find('.dropdown-text')
-            .text(displayText)
-            .addClass('selected-values')
-            .attr('title', fullText);
+    let displayValue = filters.slice(0, shownCount).join(separator);
+    let remainingCount = filters.length - shownCount;
+
+    // If a next value exists, try partially truncating it with "…" instead
+    // of immediately falling back to "(+X)"
+    if (remainingCount > 0) {
+        const nextValue = filters[shownCount];
+        const restAfterNext = remainingCount - 1;
+        const prefix = shownCount > 0 ? displayValue + separator : '';
+        const suffix = restAfterNext > 0 ? ` (+${restAfterNext})` : '';
+
+        const widthForNext = availableWidth - getTextWidth(prefix, font) - getTextWidth(suffix, font);
+        const truncatedNext = truncateToWidth(nextValue, widthForNext, font);
+
+        const meaningfulLength = truncatedNext.replace('…', '').length;
+        if (meaningfulLength >= MIN_PARTIAL_CHARS) {
+            displayValue = prefix + truncatedNext;
+            remainingCount = restAfterNext;
+        }
+    }
+
+    // Edge case: not even the first value fits fully or partially above
+    if (shownCount === 0 && displayValue === '') {
+        remainingCount = filters.length - 1;
+        const suffix = remainingCount > 0 ? ` (+${remainingCount})` : '';
+        const suffixWidth = remainingCount > 0 ? getTextWidth(suffix, font) : 0;
+        displayValue = truncateToWidth(filters[0], availableWidth - suffixWidth, font);
+    }
+
+    textEl.append($('<span class="dropdown-text-value">').text(displayValue));
+
+    if (remainingCount > 0) {
+        textEl.append($('<span class="dropdown-text-count">').text(`(+${remainingCount})`));
     }
 }
 
@@ -189,6 +283,11 @@ function createMultiSelect(container, options, column, showSearch = true) {
     });
     
     multiSelect.append(dropdown);
+
+    const resizeObserver = new ResizeObserver(() => {
+        updateDropdownText(dropdown, dropdown.data('filters') || []);
+        });
+    resizeObserver.observe(dropdown[0]);
     
     // Toggle dropdown visibility
     const toggleDropdown = function() {
@@ -264,7 +363,7 @@ function createMultiSelect(container, options, column, showSearch = true) {
             optionsContainer.find('.multi-select-option').removeClass('selected');
             $(this).addClass('selected');
             activeFilters[columnTitle] = [];
-            dropdown.find('.dropdown-text').text('All').removeClass('selected-values');
+            updateDropdownText(dropdown, []);
 
             isFilteringInProgress = true;
 
@@ -437,7 +536,9 @@ $('#clear-all-filters').on('click', function() {
     
     $('.multi-select-option').removeClass('selected');
     $('.multi-select-option[data-value=""]').addClass('selected');
-    $('.dropdown-text').text('All').removeClass('selected-values').removeAttr('title');
+    $('.multi-select-dropdown').each(function() {
+        updateDropdownText($(this), []);
+    });
     
     $('body > .multi-select-options .multi-select-option').removeClass('selected');
     $('body > .multi-select-options .multi-select-option[data-value=""]').addClass('selected');
